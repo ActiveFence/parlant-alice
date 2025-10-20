@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "parlant-activefence"
-version = "0.1.0"
+version = "0.1.1"
 description = "ActiveFence integration for Parlant"
 readme = "README.md"
 keywords = ["parlant", "activefence", "security", "threat-detection", "content-moderation"]
@@ -14,7 +14,7 @@ classifiers = [
 ]
 requires-python = ">=3.9"
 dependencies = [
-    "parlant>=3.0.2",
+    "parlant @ git+https://github.com/emcie-co/parlant.git@develop",
     "activefence-client-sdk>=0.0.10"
 ]
 
