@@ -15,6 +15,7 @@ classifiers = [
 requires-python = ">=3.9"
 dependencies = [
     "parlant>=3.0.2",
+    "activefence-client-sdk>=0.0.10"
 ]
 
 [project.optional-dependencies]
