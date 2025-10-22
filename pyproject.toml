@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "parlant-activefence"
-version = "0.1.1"
+version = "0.1.2"
 description = "ActiveFence integration for Parlant"
 readme = "README.md"
 keywords = ["parlant", "activefence", "security", "threat-detection", "content-moderation"]
