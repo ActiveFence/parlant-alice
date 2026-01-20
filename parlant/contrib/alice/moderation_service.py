@@ -1,11 +1,12 @@
+from typing_extensions import override
+from wonderfence_sdk.client import AnalysisContext, WonderFenceClient
+from wonderfence_sdk.models import Actions
+
 from parlant.core.loggers import Logger
 from parlant.core.nlp.embedding import Embedder
 from parlant.core.nlp.generation import SchematicGenerator, T
 from parlant.core.nlp.moderation import CustomerModerationContext, ModerationCheck, ModerationService
 from parlant.core.nlp.service import NLPService
-from typing_extensions import override
-from wonderfence_sdk.client import AnalysisContext, WonderFenceClient
-from wonderfence_sdk.models import Actions
 
 
 class AliceNLPServiceWrapper(NLPService):

@@ -7,10 +7,11 @@ This module provides the Alice class for integrating with Alice services.
 import os
 from typing import Any, Optional
 
-import parlant.sdk as p
 from wonderfence_sdk.client import AnalysisContext
 from wonderfence_sdk.client import WonderFenceClient as SDKClient
 from wonderfence_sdk.models import Actions, EvaluateMessageResponse
+
+import parlant.sdk as p
 
 from .moderation_service import AliceNLPServiceWrapper
 
