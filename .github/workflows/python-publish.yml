@@ -21,8 +21,13 @@ jobs:
 
       - uses: actions/setup-python@v5
         with:
-          python-version: "3.13"
-          allow-prereleases: false
+          python-version: "3.13.1"
+
+      - name: Verify Python version
+        run: |
+          python --version
+          which python
+          ls -la $(which python)
 
       - name: Install dependencies
         run: |
