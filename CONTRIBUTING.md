@@ -1,6 +1,6 @@
-# Contributing to parlant-activefence
+# Contributing to parlant-alice
 
-Thank you for your interest in contributing to parlant-activefence! We welcome contributions from the community.
+Thank you for your interest in contributing to parlant-alice! We welcome contributions from the community.
 
 ## Table of Contents
 
@@ -29,12 +29,12 @@ There are many ways to contribute to this project:
 1. **Fork the repository** on GitHub
 2. **Clone your fork** locally:
    ```bash
-   git clone https://github.com/YOUR_USERNAME/parlant-activefence.git
-   cd parlant-activefence
+   git clone https://github.com/YOUR_USERNAME/parlant-alice.git
+   cd parlant-alice
    ```
 3. **Add the upstream repository** as a remote:
    ```bash
-   git remote add upstream https://github.com/ActiveFence/parlant-activefence.git
+   git remote add upstream https://github.com/ActiveFence/parlant-alice.git
    ```
 
 ## Development Setup
@@ -170,7 +170,7 @@ pytest
    ```
 
 2. **Open a pull request** on GitHub:
-   - Go to the [parlant-activefence repository](https://github.com/ActiveFence/parlant-activefence)
+   - Go to the [parlant-alice repository](https://github.com/ActiveFence/parlant-alice)
    - Click "New Pull Request"
    - Select your fork and branch
    - Fill out the pull request template
@@ -200,7 +200,7 @@ When reporting bugs, please include:
 - **Code examples** or error messages if applicable
 - **Screenshots** if relevant
 
-Create an issue at: https://github.com/ActiveFence/parlant-activefence/issues
+Create an issue at: https://github.com/ActiveFence/parlant-alice/issues
 
 ## Feature Requests
 
@@ -211,7 +211,7 @@ We welcome feature suggestions! When proposing a feature:
 - **Provide examples** of how it would work
 - **Consider alternatives** you've thought about
 
-Create a feature request at: https://github.com/ActiveFence/parlant-activefence/issues
+Create a feature request at: https://github.com/ActiveFence/parlant-alice/issues
 
 ## Suggesting Code Changes or Additions
 
@@ -237,8 +237,8 @@ If you have questions about contributing, feel free to:
 
 ## License
 
-By contributing to parlant-activefence, you agree that your contributions will be licensed under the MIT License.
+By contributing to parlant-alice, you agree that your contributions will be licensed under the MIT License.
 
 ---
 
-Thank you for contributing to parlant-activefence!
+Thank you for contributing to parlant-alice!

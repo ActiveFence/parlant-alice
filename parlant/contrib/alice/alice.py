@@ -1,37 +1,37 @@
 """
-ActiveFence integration module.
+Alice integration module.
 
-This module provides the ActiveFence class for integrating with ActiveFence services.
+This module provides the Alice class for integrating with Alice services.
 """
 
 import os
 from typing import Any, Optional
 
-from activefence_client_sdk.client import ActiveFenceClient as SDKClient
-from activefence_client_sdk.client import AnalysisContext
-from activefence_client_sdk.models import Actions, EvaluateMessageResponse
+from wonderfence_sdk.client import AnalysisContext
+from wonderfence_sdk.client import WonderFenceClient as SDKClient
+from wonderfence_sdk.models import Actions, EvaluateMessageResponse
 
 import parlant.sdk as p
 
-from .moderation_service import ActiveFenceNLPServiceWrapper
+from .moderation_service import AliceNLPServiceWrapper
 
 
-class ActiveFence:
+class Alice:
     def __init__(
         self, api_key: Optional[str] = None, app_name: Optional[str] = None, blocked_message: Optional[str] = None
     ):
         """
-        Initialize the ActiveFence client.
+        Initialize the Alice client.
 
         Args:
-            api_key: ActiveFence API key for authentication. If not provided, will be loaded from env var.
-            app_name: Application name for identification. If not provided, will be loaded from env var.
-            blocked_message: Message to display when content is blocked. If not provided, will be loaded from ACTIVEFENCE_BLOCKED_MESSAGE env var, or defaults to 'The generated message was blocked by guardrails.'
+            api_key: Alice API key for authentication. If not provided, will be loaded from ALICE_API_KEY env var.
+            app_name: Application name for identification. If not provided, will be loaded from ALICE_APP_NAME env var.
+            blocked_message: Message to display when content is blocked. If not provided, will be loaded from ALICE_BLOCKED_MESSAGE env var, or defaults to 'The generated message was blocked by guardrails.'
         """
-        self.api_key = api_key
-        self.app_name = app_name
+        self.api_key = api_key or os.getenv("ALICE_API_KEY")
+        self.app_name = app_name or os.getenv("ALICE_APP_NAME")
         self.blocked_message = blocked_message or os.getenv(
-            "ACTIVEFENCE_BLOCKED_MESSAGE", "The generated message was blocked by guardrails."
+            "ALICE_BLOCKED_MESSAGE", "The generated message was blocked by guardrails."
         )
         self._client = SDKClient(api_key=self.api_key, app_name=self.app_name)
 
@@ -43,7 +43,7 @@ class ActiveFence:
         try:
             analysis_result = await self._client.evaluate_response(message, analysis_context)
         except Exception as e:
-            raise Exception("Moderation service failure (ActiveFence)") from e
+            raise Exception("Moderation service failure (Alice)") from e
 
         return analysis_result
 
@@ -82,7 +82,7 @@ class ActiveFence:
         logger = container[p.Logger]
 
         # Create a wrapper that overrides get_moderation_service
-        wrapped_nlp_service = ActiveFenceNLPServiceWrapper(original_nlp_service, self._client, logger)
+        wrapped_nlp_service = AliceNLPServiceWrapper(original_nlp_service, self._client, logger)
 
         container[p.NLPService] = wrapped_nlp_service
         container[p.EngineHooks].on_message_generated.append(self.check_message_compliance)

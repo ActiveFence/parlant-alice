@@ -1,58 +1,58 @@
-# parlant-activefence
+# parlant-alice
 
-ActiveFence integration for Parlant - A Python package that provides content moderation and compliance checking for Parlant applications using ActiveFence's threat analysis & detection services.
+Alice integration for Parlant - A Python package that provides content moderation and compliance checking for Parlant applications using Alice's threat analysis & detection services.
 
 
 ## Introduction
-ActiveFence’s Trust and Safety (T&S) is the world’s leading tool stack for Trust & Safety teams. With ActiveFence’s end-to-end solution, Trust & Safety teams of all sizes can protect users from malicious activity and online harm – regardless of content format, language or abuse area. Integrating with the T&S platform enables you to detect, collect and analyze harmful content that may put your users and brand at risk. By combining AI and a team of subject-matter experts, the ActiveFence T&S platform enables you to be agile and proactive for maximum efficiency, scalability and impact.
+Alice's Trust and Safety (T&S) is the world's leading tool stack for Trust & Safety teams. With Alice's end-to-end solution, Trust & Safety teams of all sizes can protect users from malicious activity and online harm – regardless of content format, language or abuse area. Integrating with the T&S platform enables you to detect, collect and analyze harmful content that may put your users and brand at risk. By combining AI and a team of subject-matter experts, the Alice T&S platform enables you to be agile and proactive for maximum efficiency, scalability and impact.
 
 ## Installation
 
-You can install `parlant-activefence` using pip:
+You can install `parlant-alice` using pip:
 
 ```bash
-pip install parlant-activefence
+pip install parlant-alice
 ```
 
 ## Usage
 
 ### Basic Usage
 
-The `parlant-activefence` package integrates with Parlant's framework to provide automatic content moderation and compliance checking. Here's how to use it:
+The `parlant-alice` package integrates with Parlant's framework to provide automatic content moderation and compliance checking. Here's how to use it:
 
 ```python
-from parlant.contrib.activefence import ActiveFence
+from parlant.contrib.alice import Alice
 
-# Configure Parlant server to use ActiveFence moderation services
+# Configure Parlant server to use Alice moderation services
 # Will use environment variables for configuration
-async with p.Server(configure_container=ActiveFence().configure_container) as server:
+async with p.Server(configure_container=Alice().configure_container) as server:
 
 ```
 
-For the ActiveFence integration to work, an API key must be configured. This and more can be supplied using environment variables.
-The following environment variables can be used to configure ActiveFence integration:
+For the Alice integration to work, an API key must be configured. This and more can be supplied using environment variables.
+The following environment variables can be used to configure Alice integration:
 
 | Variable | Description | Default |
 |----------|-------------|---------|
-| `ACTIVEFENCE_API_KEY` | ActiveFence API key for authentication | None (required) |
-| `ACTIVEFENCE_APP_NAME` | Application name for identification | Unknown |
-| `ACTIVEFENCE_BLOCKED_MESSAGE` | Message to display when content is blocked | "The generated message was blocked by guardrails." |
+| `ALICE_API_KEY` | Alice API key for authentication | None (required) |
+| `ALICE_APP_NAME` | Application name for identification | None |
+| `ALICE_BLOCKED_MESSAGE` | Message to display when content is blocked | "The generated message was blocked by guardrails." |
 
 These values can also be passed directly when initializing the container:
 
 ```python
-from parlant.contrib.activefence import ActiveFence
+from parlant.contrib.alice import Alice
 
-moderation = ActiveFence(api_key="API_KEY",app_name="APP_NAME", blocked_message="This message was blocked")
+moderation = Alice(api_key="API_KEY",app_name="APP_NAME", blocked_message="This message was blocked")
 async with p.Server(configure_container=moderation.configure_container) as server:
 ```
 
 ### Impact
 
-Using ActiveFence's moderation as shown will analyze messages sent by users to the AI agent, and the agent's response to them.
+Using Alice's moderation as shown will analyze messages sent by users to the AI agent, and the agent's response to them.
 This helps manage abusive messages, protect the application from malicious prompts and ensure the agent responses align to your policies.
 
-User messages blocked by ActiveFence will not reach the agent, but it will get a flagged message indication a censored user request. You can guide the agent to respond to such messages using the Parlant guidelines, like so:
+User messages blocked by Alice will not reach the agent, but it will get a flagged message indication a censored user request. You can guide the agent to respond to such messages using the Parlant guidelines, like so:
 ```python
 await agent.create_guideline(
         condition="the customer's last message is censored",
@@ -60,20 +60,20 @@ await agent.create_guideline(
     )
 ```
 
-Analysis of the agent responses works a bit different. If the ActiveFence analysis marks the response as BLOCKED, the message itself will not be returned to the user, and instead a preconfigured block message will be returned. This message can be configured as described above.
+Analysis of the agent responses works a bit different. If the Alice analysis marks the response as BLOCKED, the message itself will not be returned to the user, and instead a preconfigured block message will be returned. This message can be configured as described above.
 If a policy violation is detected but not flagged to be blocked, a warning is logged using Parlant's internal logger. This warning message will look like this:
 [warning  ] [ReuwnpD7Gzn::process][MessageEventComposer][CannedResponseGenerator] Prevented sending a non-compliant message: 'However, I can't respond to your previous message because it was censored based on our guardrails analysis. If you have another question or need assistance, feel free to ask.'.
 
 ### Example
 
-Here is a complete example of setting up a Parlant server with ActiveFence moderation:
+Here is a complete example of setting up a Parlant server with Alice moderation:
 ```python
 import asyncio
 import parlant.sdk as p
-from parlant.contrib.activefence import ActiveFence
+from parlant.contrib.alice import Alice
 
 async def main():
-    async with p.Server(configure_container=ActiveFence(api_key="<API_KEY>",app_name="test").configure_container) as server:
+    async with p.Server(configure_container=Alice(api_key="<API_KEY>",app_name="test").configure_container) as server:
         agent = await server.create_agent(
             name="Otto Carmen",
             description="You work at a computer parts store",
@@ -127,7 +127,7 @@ async def main():
 asyncio.run(main())
 ```
 
-Enabled moderation="auto" will trigger the user prompt analysis, and if the ActiveFence policy is configured for it, it will block the message for including legal advice, even if the LLM is not configured to respond to this.
+Enabled moderation="auto" will trigger the user prompt analysis, and if the Alice policy is configured for it, it will block the message for including legal advice, even if the LLM is not configured to respond to this.
 ## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.

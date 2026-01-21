@@ -3,11 +3,11 @@ requires = ["setuptools>=61.0.0", "wheel", "build"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "parlant-activefence"
+name = "parlant-alice"
 version = "0.1.2"
-description = "ActiveFence integration for Parlant"
+description = "Alice integration for Parlant"
 readme = "README.md"
-keywords = ["parlant", "activefence", "security", "threat-detection", "content-moderation"]
+keywords = ["parlant", "alice", "security", "threat-detection", "content-moderation"]
 classifiers = [
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
@@ -15,7 +15,7 @@ classifiers = [
 requires-python = ">=3.9"
 dependencies = [
     "parlant>=3.0.2",
-    "activefence-client-sdk>=0.0.11"
+    "wonderfence-sdk>=0.0.13"
 ]
 
 [project.optional-dependencies]
@@ -28,7 +28,7 @@ dev = [
 ]
 
 [project.urls]
-Repository = "https://github.com/ActiveFence/parlant-activefence"
+Repository = "https://github.com/ActiveFence/parlant-alice"
 
 [tool.ruff]
 target-version = "py39"  # Python 3.9+
