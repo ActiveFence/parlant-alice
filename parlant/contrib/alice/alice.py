@@ -33,6 +33,13 @@ class Alice:
         self.blocked_message = blocked_message or os.getenv(
             "ALICE_BLOCKED_MESSAGE", "The generated message was blocked by guardrails."
         )
+
+        if not self.api_key:
+            raise ValueError(
+                "Alice API key is required. Please provide it via the 'api_key' parameter "
+                "or set the ALICE_API_KEY environment variable."
+            )
+
         self._client = SDKClient(api_key=self.api_key, app_name=self.app_name)
 
     async def check_message(self, message: str, session_id: str, agent_id: str) -> EvaluateMessageResponse:
