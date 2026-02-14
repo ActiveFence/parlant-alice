@@ -18,7 +18,10 @@ from .moderation_service import AliceNLPServiceWrapper
 
 class Alice:
     def __init__(
-        self, api_key: Optional[str] = None, app_name: Optional[str] = None, blocked_message: Optional[str] = None
+        self,
+        api_key: Optional[str] = None,
+        app_name: Optional[str] = None,
+        blocked_message: Optional[str] = None,
     ):
         """
         Initialize the Alice client.
@@ -55,41 +58,39 @@ class Alice:
         return analysis_result
 
     async def check_message_compliance(
-        self, ctx: p.LoadedContext, payload: Any, exc: Exception | None
+        self, ctx: p.EngineContext, payload: Any, exc: Exception | None
     ) -> p.EngineHookResult:
         generated_message = payload
 
         result = await self.check_message(generated_message, ctx.session.id, ctx.agent.id)
+
         if result.action == Actions.DETECT:
             ctx.logger.warning(f"Detected a non-compliant message: '{generated_message}': {result.detections}.")
         elif result.action in (Actions.BLOCK, Actions.MASK):
             message = result.action_text if result.action == Actions.MASK else self.blocked_message
+
             ctx.logger.warning(f"Prevented sending a non-compliant message: '{generated_message}'.")
+
             await ctx.session_event_emitter.emit_message_event(
-                correlation_id=ctx.correlator.correlation_id,
+                trace_id=ctx.tracer.trace_id,
                 data=p.MessageEventData(
                     message=message,
                     participant={"id": ctx.agent.id, "display_name": ctx.agent.name},
                 ),
             )
-            await ctx.session_event_emitter.emit_status_event(
-                correlation_id=ctx.correlator.correlation_id,
-                data={
-                    "status": "ready",
-                    "data": {},
-                },
-            )
+
             return p.EngineHookResult.BAIL  # Do not send this message
 
         return p.EngineHookResult.CALL_NEXT  # Continue with the normal process
 
     async def configure_container(self, container: p.Container) -> p.Container:
-        # Get the original NLPService and logger from the container
+        # Get the original NLPService, logger, and meter from the container
         original_nlp_service = container[p.NLPService]
         logger = container[p.Logger]
+        meter = container[p.Meter]
 
         # Create a wrapper that overrides get_moderation_service
-        wrapped_nlp_service = AliceNLPServiceWrapper(original_nlp_service, self._client, logger)
+        wrapped_nlp_service = AliceNLPServiceWrapper(original_nlp_service, self._client, logger, meter)
 
         container[p.NLPService] = wrapped_nlp_service
         container[p.EngineHooks].on_message_generated.append(self.check_message_compliance)

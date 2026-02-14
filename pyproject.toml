@@ -14,7 +14,7 @@ classifiers = [
 ]
 requires-python = ">=3.9"
 dependencies = [
-    "parlant>=3.0.2",
+    "parlant>=3.2.0",
     "wonderfence-sdk>=0.0.13"
 ]
 
@@ -50,6 +50,7 @@ select = [
 ignore = [
     "E501", # line too long, handled by black
     "B008", # do not perform function calls in argument defaults
+    "B006", # do not warn about mutable argument defaults
     "E402", # module level import not at top of file (for test files)
     "PLR0913", # too many arguments in function definition
 ]
