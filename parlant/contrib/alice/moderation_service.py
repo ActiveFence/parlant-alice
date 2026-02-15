@@ -55,11 +55,14 @@ class AliceModerationService(BaseModerationService):
         with self.logger.scope("Alice Moderation Request"):
             analysis_context = AnalysisContext(
                 session_id=context.session.id,
-                customer_id=context.session.customer_id,
+                user_id=context.session.customer_id,
             )
 
             try:
-                response = await self._client.evaluate_prompt(context.message, analysis_context)
+                response = await self._client.evaluate_prompt(
+                    context=analysis_context,
+                    prompt=context.message,
+                )
             except Exception as e:
                 raise Exception("Moderation service failure (Alice)") from e
 

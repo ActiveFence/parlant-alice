@@ -9,7 +9,7 @@ from typing import Any, Optional
 
 from wonderfence_sdk.client import AnalysisContext
 from wonderfence_sdk.client import WonderFenceClient as SDKClient
-from wonderfence_sdk.models import Actions, EvaluateMessageResponse
+from wonderfence_sdk.models import Actions, EvaluateMessageResponse, ImageInput
 
 import parlant.sdk as p
 
@@ -45,13 +45,44 @@ class Alice:
 
         self._client = SDKClient(api_key=self.api_key, app_name=self.app_name)
 
-    async def check_message(self, message: str, session_id: str, agent_id: str) -> EvaluateMessageResponse:
+    async def check_message(
+        self,
+        session_id: str,
+        agent_id: str,
+        message: Optional[str] = None,
+        image: Optional[ImageInput] = None,
+    ) -> EvaluateMessageResponse:
+        """
+        Check a message (text or image) for policy violations.
+
+        Args:
+            session_id: Session identifier
+            agent_id: Agent identifier
+            message: Text message to check (mutually exclusive with image)
+            image: ImageInput object for image checking (mutually exclusive with message)
+
+        Returns:
+            EvaluateMessageResponse with moderation results
+
+        Raises:
+            ValueError: If neither or both message and image are provided
+            Exception: If moderation service fails
+        """
+        if message is None and image is None:
+            raise ValueError("Either message or image must be provided")
+        if message is not None and image is not None:
+            raise ValueError("Cannot provide both message and image - they are mutually exclusive")
+
         analysis_context = AnalysisContext(
             user_id=agent_id,
             session_id=session_id,
         )
         try:
-            analysis_result = await self._client.evaluate_response(message, analysis_context)
+            analysis_result = await self._client.evaluate_response(
+                context=analysis_context,
+                response=message,
+                image=image,
+            )
         except Exception as e:
             raise Exception("Moderation service failure (Alice)") from e
 
@@ -62,7 +93,11 @@ class Alice:
     ) -> p.EngineHookResult:
         generated_message = payload
 
-        result = await self.check_message(generated_message, ctx.session.id, ctx.agent.id)
+        result = await self.check_message(
+            session_id=ctx.session.id,
+            agent_id=ctx.agent.id,
+            message=generated_message,
+        )
 
         if result.action == Actions.DETECT:
             ctx.logger.warning(f"Detected a non-compliant message: '{generated_message}': {result.detections}.")
