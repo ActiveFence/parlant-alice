@@ -130,4 +130,7 @@ class Alice:
         container[p.NLPService] = wrapped_nlp_service
         container[p.EngineHooks].on_message_generated.append(self.check_message_compliance)
 
+        # Register the Alice instance in the container for use in custom tools
+        container[Alice] = self
+
         return container

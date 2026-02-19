@@ -128,6 +128,13 @@ asyncio.run(main())
 ```
 
 Enabled moderation="auto" will trigger the user prompt analysis, and if the Alice policy is configured for it, it will block the message for including legal advice, even if the LLM is not configured to respond to this.
+
+### Using Alice in Custom Tools
+
+When you configure Alice integration with Parlant, the Alice instance is automatically registered in the Parlant container. This allows you to access Alice's moderation functionality in your custom tools via dependency injection.
+
+This can be useful for example when your Parlant tools generate images that you want to evaluate with Alice.
+
 ## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
