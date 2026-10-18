@@ -29,22 +29,28 @@ async with p.Server(configure_container=Alice().configure_container) as server:
 
 ```
 
-For the Alice integration to work, an API key must be configured. This and more can be supplied using environment variables.
+For the Alice integration to work, an API key and an application ID must be configured. The application ID is the ID (a UUID) of the application in Alice's Application Inventory; messages are evaluated against the policies assigned to that application. These and more can be supplied using environment variables.
 The following environment variables can be used to configure Alice integration:
 
 | Variable | Description | Default |
 |----------|-------------|---------|
 | `ALICE_API_KEY` | Alice API key for authentication | None (required) |
-| `ALICE_APP_NAME` | Application name for identification | None |
+| `ALICE_APP_ID` | ID (UUID) of the application in Alice's Application Inventory | None (required) |
 | `ALICE_BLOCKED_MESSAGE` | Message to display when content is blocked | "The generated message was blocked by guardrails." |
+
+Each evaluation is sent with the Parlant session ID as `session_id` and the session's customer ID as `user_id`, for both customer messages and agent replies. Sessions created without a customer belong to Parlant's shared `guest` customer, so they all report the same user; create a Parlant customer per end user to tell them apart. Both IDs must be 1–100 characters.
+
+Create `Alice` inside your `async` main function, as in the examples below: the WonderFence client opens its HTTP session on the running event loop.
 
 These values can also be passed directly when initializing the container:
 
 ```python
 from parlant.contrib.alice import Alice
 
-moderation = Alice(api_key="API_KEY",app_name="APP_NAME", blocked_message="This message was blocked")
-async with p.Server(configure_container=moderation.configure_container) as server:
+async def main():
+    moderation = Alice(api_key="<API_KEY>", app_id="<APP_ID>", blocked_message="This message was blocked")
+    async with p.Server(configure_container=moderation.configure_container) as server:
+        ...
 ```
 
 ### Impact
@@ -73,7 +79,7 @@ import parlant.sdk as p
 from parlant.contrib.alice import Alice
 
 async def main():
-    async with p.Server(configure_container=Alice(api_key="<API_KEY>",app_name="test").configure_container) as server:
+    async with p.Server(configure_container=Alice(api_key="<API_KEY>", app_id="<APP_ID>").configure_container) as server:
         agent = await server.create_agent(
             name="Otto Carmen",
             description="You work at a computer parts store",
@@ -128,6 +134,16 @@ asyncio.run(main())
 ```
 
 Enabled moderation="auto" will trigger the user prompt analysis, and if the Alice policy is configured for it, it will block the message for including legal advice, even if the LLM is not configured to respond to this.
+## Upgrading from 0.1.x
+
+0.2.0 evaluates messages through the WonderFence v2 API (`/v2/evaluate/message`) instead of the deprecated v1 API, and requires `wonderfence-sdk` 3.x. To upgrade:
+
+- Set `ALICE_APP_ID` (or pass `app_id`) to the ID of the application in the Application Inventory. `Alice` raises a `ValueError` at construction when it is missing.
+- Remove `ALICE_APP_NAME` / `app_name`; it is no longer used.
+- If you call `Alice.check_message` directly, pass `customer_id` instead of `agent_id`.
+
+See [CHANGELOG.md](CHANGELOG.md) for the full list of changes.
+
 ## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
