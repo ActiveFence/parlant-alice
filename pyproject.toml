@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "parlant-alice"
-version = "0.1.5"
+version = "0.2.0"
 description = "Alice integration for Parlant"
 readme = "README.md"
 keywords = ["parlant", "alice", "security", "threat-detection", "content-moderation"]
@@ -15,17 +15,21 @@ classifiers = [
 requires-python = ">=3.9"
 dependencies = [
     "parlant>=3.2.0",
-    "wonderfence-sdk>=0.0.13"
+    "wonderfence-sdk>=3.0.0,<4"
 ]
 
 [project.optional-dependencies]
 dev = [
     "pytest>=6.0",
+    "pytest-asyncio>=0.23",
     "pytest-cov>=2.0",
     "black>=21.0",
     "flake8>=3.8",
     "mypy>=0.800",
 ]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
 
 [project.urls]
 Repository = "https://github.com/ActiveFence/parlant-alice"
