@@ -21,12 +21,18 @@ pip install parlant-alice
 The `parlant-alice` package integrates with Parlant's framework to provide automatic content moderation and compliance checking. Here's how to use it:
 
 ```python
+import asyncio
+
+import parlant.sdk as p
 from parlant.contrib.alice import Alice
 
-# Configure Parlant server to use Alice moderation services
-# Will use environment variables for configuration
-async with p.Server(configure_container=Alice().configure_container) as server:
+async def main():
+    # Configure the Parlant server to use Alice moderation services.
+    # Alice() reads its configuration from environment variables.
+    async with p.Server(configure_container=Alice().configure_container) as server:
+        ...
 
+asyncio.run(main())
 ```
 
 For the Alice integration to work, an API key and an application ID must be configured. The application ID is the ID (a UUID) of the application in Alice's Application Inventory; messages are evaluated against the policies assigned to that application. These and more can be supplied using environment variables.
@@ -58,7 +64,7 @@ async def main():
 Using Alice's moderation as shown will analyze messages sent by users to the AI agent, and the agent's response to them.
 This helps manage abusive messages, protect the application from malicious prompts and ensure the agent responses align to your policies.
 
-User messages blocked by Alice will not reach the agent, but it will get a flagged message indication a censored user request. You can guide the agent to respond to such messages using the Parlant guidelines, like so:
+User messages blocked by Alice will not reach the agent, but it will get a flagged message indicating a censored user request. Only a BLOCK action flags a user message; DETECT and MASK let it through unchanged. You can guide the agent to respond to such messages using the Parlant guidelines, like so:
 ```python
 await agent.create_guideline(
         condition="the customer's last message is censored",
@@ -66,9 +72,22 @@ await agent.create_guideline(
     )
 ```
 
-Analysis of the agent responses works a bit different. If the Alice analysis marks the response as BLOCKED, the message itself will not be returned to the user, and instead a preconfigured block message will be returned. This message can be configured as described above.
-If a policy violation is detected but not flagged to be blocked, a warning is logged using Parlant's internal logger. This warning message will look like this:
-[warning  ] [ReuwnpD7Gzn::process][MessageEventComposer][CannedResponseGenerator] Prevented sending a non-compliant message: 'However, I can't respond to your previous message because it was censored based on our guardrails analysis. If you have another question or need assistance, feel free to ask.'.
+Analysis of the agent responses works a bit different, depending on the action Alice returns:
+
+- **BLOCK**: the message itself will not be returned to the user, and instead a preconfigured block message will be returned. This message can be configured as described above.
+- **MASK**: the message is replaced with the masked text Alice returns (`action_text`).
+- **DETECT**: the message is sent unchanged.
+- Any other action (no violation): the message is sent unchanged, and nothing is logged.
+
+For BLOCK and MASK, a warning is logged using Parlant's internal logger. This warning message will look like this:
+```
+Prevented sending a non-compliant message: '<the original agent message>'.
+```
+
+For DETECT, the warning names the detections instead:
+```
+Detected a non-compliant message: '<the agent message>': [<detections>].
+```
 
 ### Example
 
