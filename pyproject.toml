@@ -14,7 +14,7 @@ classifiers = [
 ]
 requires-python = ">=3.9"
 dependencies = [
-    "parlant>=3.2.0",
+    "parlant>=3.2.0,<4",
     "wonderfence-sdk>=3.0.0,<4"
 ]
 
