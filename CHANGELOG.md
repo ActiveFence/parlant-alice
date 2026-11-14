@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Fixes
+
+- Requires `parlant>=3.2.0,<4`. Parlant 4 removed `StreamingTextGenerator` and `NLPService`, so a fresh install of 0.2.0, which resolves Parlant 4, failed to import (#12).
+
 ## 0.2.0
 
 ### Breaking changes
